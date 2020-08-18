@@ -31,8 +31,13 @@ class Find {
 
     find(dir) {
         return fs.access(dir).then(async () => {
-            let res = await fs.stat(dir);
-            if (res.isDirectory()) {
+            let res = null;
+            try {
+                res = await fs.stat(dir);
+            } catch(e) {
+                return;
+            }
+            if (res && res.isDirectory()) {
                 const valid = this.option.filter? await this.option.filter(dir) : true;
                 if (valid) {
                     await this.eachDir(dir);
